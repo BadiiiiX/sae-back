@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Adress {
+  id     Int     @id @default(autoincrement())
+  street String?
+  city   String?
+  zip    String?
+  User   User[]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  birthdate DateTime
+  adress    Adress    @relation(fields: [adressId], references: [id])
+  adressId  Int
+  firstname String?
+  lastname  String?
+  Sondage   Sondage[]
+}
+
+model Aliment {
+  id                Int              @id @default(autoincrement())
+  code              String           @unique
+  name              String
+  category          Aliment_Category @relation(fields: [alimentCategoryId], references: [id])
+  alimentCategoryId Int
+  Sondage           Sondage[]
+}
+
+model Sondage {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  aliment   Aliment  @relation(fields: [alimentId], references: [id])
+  userId    Int
+  alimentId Int
+  @@unique([userId, alimentId])
+}
+
+model Aliment_Category {
+  id            Int                   @id @default(autoincrement())
+  code          String                @unique
+  name          String
+  aliments      Aliment[]
+  subCategories Aliment_SubCategory[]
+}
+
+model Aliment_SubCategory {
+  id                Int                      @id @default(autoincrement())
+  code              String                   @unique
+  name              String
+  subSubCategories  Aliment_SubSubCategory[]
+  Aliment_Category  Aliment_Category         @relation(fields: [alimentCategoryId], references: [id])
+  alimentCategoryId Int
+}
+
+model Aliment_SubSubCategory {
+  id                   Int                 @id @default(autoincrement())
+  code                 String              @unique
+  name                 String
+  Aliment_SubCategory  Aliment_SubCategory @relation(fields: [alimentSubCategoryId], references: [id])
+  alimentSubCategoryId Int
+}
