@@ -1,11 +1,11 @@
 -- CreateTable
-CREATE TABLE "Adress" (
+CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "street" TEXT,
     "city" TEXT,
     "zip" TEXT,
 
-    CONSTRAINT "Adress_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -13,7 +13,7 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "birthdate" TIMESTAMP(3) NOT NULL,
-    "adressId" INTEGER NOT NULL,
+    "addressId" INTEGER NOT NULL,
     "firstname" TEXT,
     "lastname" TEXT,
 
@@ -22,12 +22,11 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Aliment" (
-    "id" SERIAL NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "alimentCategoryId" INTEGER NOT NULL,
+    "alimentCategoryCode" TEXT NOT NULL,
 
-    CONSTRAINT "Aliment_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Aliment_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateTable
@@ -35,38 +34,35 @@ CREATE TABLE "Sondage" (
     "id" SERIAL NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL,
-    "alimentId" INTEGER NOT NULL,
+    "alimentCode" TEXT NOT NULL,
 
     CONSTRAINT "Sondage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Aliment_Category" (
-    "id" SERIAL NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
-    CONSTRAINT "Aliment_Category_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Aliment_Category_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateTable
 CREATE TABLE "Aliment_SubCategory" (
-    "id" SERIAL NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "alimentCategoryId" INTEGER NOT NULL,
+    "alimentCategoryCode" TEXT NOT NULL,
 
-    CONSTRAINT "Aliment_SubCategory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Aliment_SubCategory_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateTable
 CREATE TABLE "Aliment_SubSubCategory" (
-    "id" SERIAL NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "alimentSubCategoryId" INTEGER NOT NULL,
+    "alimentSubCategoryCode" TEXT NOT NULL,
 
-    CONSTRAINT "Aliment_SubSubCategory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Aliment_SubSubCategory_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateIndex
@@ -76,7 +72,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Aliment_code_key" ON "Aliment"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Sondage_userId_alimentId_key" ON "Sondage"("userId", "alimentId");
+CREATE UNIQUE INDEX "Sondage_userId_alimentCode_key" ON "Sondage"("userId", "alimentCode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Aliment_Category_code_key" ON "Aliment_Category"("code");
@@ -88,19 +84,19 @@ CREATE UNIQUE INDEX "Aliment_SubCategory_code_key" ON "Aliment_SubCategory"("cod
 CREATE UNIQUE INDEX "Aliment_SubSubCategory_code_key" ON "Aliment_SubSubCategory"("code");
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_adressId_fkey" FOREIGN KEY ("adressId") REFERENCES "Adress"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Aliment" ADD CONSTRAINT "Aliment_alimentCategoryId_fkey" FOREIGN KEY ("alimentCategoryId") REFERENCES "Aliment_Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aliment" ADD CONSTRAINT "Aliment_alimentCategoryCode_fkey" FOREIGN KEY ("alimentCategoryCode") REFERENCES "Aliment_Category"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Sondage" ADD CONSTRAINT "Sondage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Sondage" ADD CONSTRAINT "Sondage_alimentId_fkey" FOREIGN KEY ("alimentId") REFERENCES "Aliment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Sondage" ADD CONSTRAINT "Sondage_alimentCode_fkey" FOREIGN KEY ("alimentCode") REFERENCES "Aliment"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Aliment_SubCategory" ADD CONSTRAINT "Aliment_SubCategory_alimentCategoryId_fkey" FOREIGN KEY ("alimentCategoryId") REFERENCES "Aliment_Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aliment_SubCategory" ADD CONSTRAINT "Aliment_SubCategory_alimentCategoryCode_fkey" FOREIGN KEY ("alimentCategoryCode") REFERENCES "Aliment_Category"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Aliment_SubSubCategory" ADD CONSTRAINT "Aliment_SubSubCategory_alimentSubCategoryId_fkey" FOREIGN KEY ("alimentSubCategoryId") REFERENCES "Aliment_SubCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aliment_SubSubCategory" ADD CONSTRAINT "Aliment_SubSubCategory_alimentSubCategoryCode_fkey" FOREIGN KEY ("alimentSubCategoryCode") REFERENCES "Aliment_SubCategory"("code") ON DELETE RESTRICT ON UPDATE CASCADE;

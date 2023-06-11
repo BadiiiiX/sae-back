@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Adress {
+model Address {
   id     Int     @id @default(autoincrement())
   street String?
   city   String?
@@ -22,53 +22,56 @@ model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
   birthdate DateTime
-  adress    Adress    @relation(fields: [adressId], references: [id])
-  adressId  Int
+  address   Address   @relation(fields: [addressId], references: [id])
+  addressId Int
   firstname String?
   lastname  String?
   Sondage   Sondage[]
 }
 
 model Aliment {
-  id                Int              @id @default(autoincrement())
-  code              String           @unique
-  name              String
-  category          Aliment_Category @relation(fields: [alimentCategoryId], references: [id])
-  alimentCategoryId Int
-  Sondage           Sondage[]
+  code                String           @id @unique
+  name                String
+  category            Aliment_Category @relation(fields: [alimentCategoryCode], references: [code])
+  subCategory         Aliment_SubCategory? @relation(fields: [alimentSubCategoryCode], references: [code])
+  subSubCategory      Aliment_SubSubCategory? @relation(fields: [alimentSubSubCategoryCode], references: [code])
+  alimentCategoryCode String
+  alimentSubCategoryCode String?
+  alimentSubSubCategoryCode String?
+  Sondage             Sondage[]
 }
 
 model Sondage {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  aliment   Aliment  @relation(fields: [alimentId], references: [id])
-  userId    Int
-  alimentId Int
-  @@unique([userId, alimentId])
+  id          Int      @id @default(autoincrement())
+  date        DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  aliment     Aliment  @relation(fields: [alimentCode], references: [code])
+  userId      Int
+  alimentCode String
+
+  @@unique([userId, alimentCode])
 }
 
 model Aliment_Category {
-  id            Int                   @id @default(autoincrement())
-  code          String                @unique
+  code          String                @id @unique
   name          String
   aliments      Aliment[]
   subCategories Aliment_SubCategory[]
 }
 
 model Aliment_SubCategory {
-  id                Int                      @id @default(autoincrement())
-  code              String                   @unique
-  name              String
-  subSubCategories  Aliment_SubSubCategory[]
-  Aliment_Category  Aliment_Category         @relation(fields: [alimentCategoryId], references: [id])
-  alimentCategoryId Int
+  code                String                   @id @unique
+  name                String
+  subSubCategories    Aliment_SubSubCategory[]
+  Aliment_Category    Aliment_Category         @relation(fields: [alimentCategoryCode], references: [code])
+  alimentCategoryCode String
+  aliments            Aliment[]
 }
 
 model Aliment_SubSubCategory {
-  id                   Int                 @id @default(autoincrement())
-  code                 String              @unique
-  name                 String
-  Aliment_SubCategory  Aliment_SubCategory @relation(fields: [alimentSubCategoryId], references: [id])
-  alimentSubCategoryId Int
+  code                   String              @id @unique
+  name                   String
+  Aliment_SubCategory    Aliment_SubCategory @relation(fields: [alimentSubCategoryCode], references: [code])
+  alimentSubCategoryCode String
+  aliments               Aliment[]
 }
