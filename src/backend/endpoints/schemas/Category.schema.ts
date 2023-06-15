@@ -8,7 +8,9 @@ const CategoryBodyCreateSchema = Type.Object({
     name: Type.String(),
 });
 
-const CategoryBodyDeleteSchema = Type.String();
+const CategoryBodyDeleteSchema = Type.Object({
+    code: Type.String()
+});
 
 const CategoryGetParamsSchema = Type.Object({
     categoryCode: Type.String()
@@ -26,7 +28,8 @@ export const CategoryCreateSchema: FastifySchema = {
     body: CategoryBodyCreateSchema,
     response: {
         200: Type.Ref(CategorySchema),
-        409: AlreadyExistsConflictSchema
+        409: AlreadyExistsConflictSchema,
+        404: DoesntExistsConflictSchema
     }
 }
 
@@ -47,7 +50,8 @@ export const CategoryGetSchema: FastifySchema = {
     operationId: "getCategoryByCode",
     params: CategoryGetParamsSchema,
     response: {
-        200: Type.Ref(CategorySchema)
+        200: Type.Ref(CategorySchema),
+        404: DoesntExistsConflictSchema
     }
 }
 

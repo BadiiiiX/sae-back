@@ -3,9 +3,12 @@ import {Aliment_SubSubCategory, Prisma} from "@prisma/client";
 import prisma from "../../../clients/Prisma";
 import {ApiError} from "../Errors/ApiError";
 import {SubSubCategoryBodyCreateSchema} from "../schemas/SubSubCategory.schema";
+import SubCategoryService from "./SubCategory.service";
 
 @Service()
 export default class SubSubCategoryService {
+
+    public static NULL_CODE_VALUE = "000000";
 
     public static SubSubCategoryPublicSelect: Prisma.Aliment_SubSubCategorySelect = {
         code: true,
@@ -13,25 +16,23 @@ export default class SubSubCategoryService {
         Aliment_SubCategory: true,
     }
 
-    async createSubSubCategory(data: SubSubCategoryBodyCreateSchema): Promise<Partial<Aliment_SubSubCategory>> {
-
-        const subSubCategory = await prisma.aliment_SubSubCategory.findUnique({
+    public static async isSubSubCategoryExist(code: string): Promise<boolean> {
+        const subSubCategory = await prisma.aliment_SubSubCategory.findFirst({
             where: {
-                code: data.code
+                code
             }
         });
 
-        if (subSubCategory !== null) {
+        return subSubCategory !== null;
+    }
+
+    async createSubSubCategory(data: SubSubCategoryBodyCreateSchema): Promise<Partial<Aliment_SubSubCategory>> {
+
+        if (await SubSubCategoryService.isSubSubCategoryExist(data.code)) {
             throw new ApiError("SubSubCategory code already exists", 409);
         }
 
-        const subCategory = await prisma.aliment_SubCategory.findUnique({
-            where: {
-                code: data.subCategoryCode
-            }
-        });
-
-        if (!subCategory) {
+        if (!await SubCategoryService.isSubCategoryExist(data.subCategoryCode)) {
             throw new ApiError("SubCategory doesn't exist", 404);
         }
 
@@ -39,11 +40,7 @@ export default class SubSubCategoryService {
             data: {
                 code: data.code,
                 name: data.name,
-                Aliment_SubCategory: {
-                    connect: {
-                        code: data.subCategoryCode
-                    }
-                }
+                alimentSubCategoryCode: data.subCategoryCode,
             }
         });
 
@@ -73,22 +70,14 @@ export default class SubSubCategoryService {
 
     async deleteSubSubCategory(code: string): Promise<Partial<void>> {
 
-        //TODO : delete all subSubCategories
-
-        const subSubCategory = await prisma.aliment_SubSubCategory.findUnique({
-            where: {
-                code
-            }
-        })
-
-        if (!subSubCategory) {
-            throw new ApiError("SubCategory doesn't exist", 404);
+        if(!await SubSubCategoryService.isSubSubCategoryExist(code)) {
+            throw new ApiError("SubSubCategory doesn't exist", 404);
         }
 
         await prisma.aliment_SubCategory.delete({
             where: {
                 code
-            }
+            },
         });
     }
 

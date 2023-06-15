@@ -6,19 +6,19 @@ import AlimentSchema from "./Aliment.schema";
 export default Type.Object({
 
    id: Type.Integer({
-         description: "The id of the sondage",
+         description: "The id of the survey",
    }),
     user: Type.Ref(UserSchema, {
-        description: "The user of the sondage",
+        description: "The user of the survey",
     }),
     aliment: Type.Ref(AlimentSchema, {
-        description: "The aliment of the sondage",
+        description: "The aliment of the survey",
     }),
     date: Type.Date({
-        description: "The date of the sondage",
+        description: "The date of the survey",
     }),
 
 }, {
-    $id: "Sondage",
-    description: "The schema describing a sondage"
+    $id: "Survey",
+    description: "The schema describing a survey"
 });

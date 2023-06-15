@@ -31,7 +31,8 @@ export const AddressDeleteSchema: FastifySchema = {
     operationId: "deleteAddress",
     body: AddressDeleteBodySchema,
     response: {
-        209: Type.Void(),
+        200: Type.Void(),
+        409: AlreadyExistsConflictSchema,
         404: DoesntExistsConflictSchema
     }
 }

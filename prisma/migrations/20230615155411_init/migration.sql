@@ -25,18 +25,20 @@ CREATE TABLE "Aliment" (
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "alimentCategoryCode" TEXT NOT NULL,
+    "alimentSubCategoryCode" TEXT,
+    "alimentSubSubCategoryCode" TEXT,
 
     CONSTRAINT "Aliment_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateTable
-CREATE TABLE "Sondage" (
+CREATE TABLE "Survey" (
     "id" SERIAL NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL,
     "alimentCode" TEXT NOT NULL,
 
-    CONSTRAINT "Sondage_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Survey_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -72,7 +74,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Aliment_code_key" ON "Aliment"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Sondage_userId_alimentCode_key" ON "Sondage"("userId", "alimentCode");
+CREATE UNIQUE INDEX "Survey_userId_alimentCode_key" ON "Survey"("userId", "alimentCode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Aliment_Category_code_key" ON "Aliment_Category"("code");
@@ -90,10 +92,16 @@ ALTER TABLE "User" ADD CONSTRAINT "User_addressId_fkey" FOREIGN KEY ("addressId"
 ALTER TABLE "Aliment" ADD CONSTRAINT "Aliment_alimentCategoryCode_fkey" FOREIGN KEY ("alimentCategoryCode") REFERENCES "Aliment_Category"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Sondage" ADD CONSTRAINT "Sondage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aliment" ADD CONSTRAINT "Aliment_alimentSubCategoryCode_fkey" FOREIGN KEY ("alimentSubCategoryCode") REFERENCES "Aliment_SubCategory"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Sondage" ADD CONSTRAINT "Sondage_alimentCode_fkey" FOREIGN KEY ("alimentCode") REFERENCES "Aliment"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aliment" ADD CONSTRAINT "Aliment_alimentSubSubCategoryCode_fkey" FOREIGN KEY ("alimentSubSubCategoryCode") REFERENCES "Aliment_SubSubCategory"("code") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Survey" ADD CONSTRAINT "Survey_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Survey" ADD CONSTRAINT "Survey_alimentCode_fkey" FOREIGN KEY ("alimentCode") REFERENCES "Aliment"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Aliment_SubCategory" ADD CONSTRAINT "Aliment_SubCategory_alimentCategoryCode_fkey" FOREIGN KEY ("alimentCategoryCode") REFERENCES "Aliment_Category"("code") ON DELETE RESTRICT ON UPDATE CASCADE;

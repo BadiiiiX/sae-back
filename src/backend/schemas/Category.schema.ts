@@ -1,5 +1,4 @@
 import {Type} from "@sinclair/typebox";
-import SubSubCategorySchema from "./SubSubCategory.schema";
 import subCategorySchema from "./SubCategory.schema";
 
 export default Type.Object({

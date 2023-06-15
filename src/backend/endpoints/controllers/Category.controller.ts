@@ -15,6 +15,35 @@ export default class categoryController {
     ) {
     }
 
+    @GET({
+        url: "/:categoryCode", options: {
+            schema: CategoryGetSchema
+        }
+    })
+    async getCategoryByCode(
+        request: FastifyRequest<{ Params: CategoryGetParamsSchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const actualCode = request.params.categoryCode;
+
+        const response = await this.categoryService.getCategory(actualCode);
+        return reply.code(200).send(response);
+    }
+
+    @GET({
+        url: "/all", options: {
+            schema: CategoryGetAllSchema
+        }
+    })
+    async getAllCategories(
+        request: FastifyRequest,
+        reply: FastifyReply):
+        Promise<void> {
+        const response = await this.categoryService.getAllCategories();
+
+        return reply.code(200).send(response);
+    }
+
     @POST({
         url: "/create", options: {
             schema: CategoryCreateSchema
@@ -40,37 +69,8 @@ export default class categoryController {
         reply: FastifyReply):
         Promise<void> {
 
-        const response = await this.categoryService.deleteCategory(request.body);
+        const response = await this.categoryService.deleteCategory(request.body.code);
 
-        return reply.code(200).send(response);
-    }
-
-    @GET({
-        url: "/get", options: {
-            schema: CategoryGetAllSchema
-        }
-    })
-    async getAllCategories(
-        request: FastifyRequest,
-        reply: FastifyReply):
-        Promise<void> {
-        const response = await this.categoryService.getAllCategories();
-
-        return reply.code(200).send(response);
-    }
-
-    @GET({
-        url: "/:categoryCode", options: {
-            schema: CategoryGetSchema
-        }
-    })
-    async getCategoryByCode(
-        request: FastifyRequest<{ Params: CategoryGetParamsSchema }>,
-        reply: FastifyReply):
-        Promise<void> {
-        const actualCode = request.params.categoryCode;
-
-        const response = await this.categoryService.getCategory(actualCode);
         return reply.code(200).send(response);
     }
 }

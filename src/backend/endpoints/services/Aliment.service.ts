@@ -3,6 +3,9 @@ import {AlimentBodyCreateSchema} from "../schemas/Aliment.schema";
 import {Aliment, Prisma} from "@prisma/client";
 import prisma from "../../../clients/Prisma";
 import {ApiError} from "../Errors/ApiError";
+import CategoryService from "./Category.service";
+import SubCategoryService from "./SubCategory.service";
+import SubSubCategoryService from "./SubSubCategory.service";
 
 @Service()
 export default class AlimentService {
@@ -15,58 +18,42 @@ export default class AlimentService {
         subSubCategory: true,
     }
 
-    public static AlimentPublicSelectWithoutSubSubCategory: Prisma.AlimentSelect = {
-        code: true,
-        name: true,
-        category: true,
-        subCategory: true,
-        subSubCategory: false,
+    public static async isAlimentExist(code: string): Promise<boolean> {
+        const aliment = await prisma.aliment.findFirst({
+            where: {
+                code
+            }
+        });
+
+        return aliment !== null;
     }
 
     async createAliment(data: AlimentBodyCreateSchema): Promise<Partial<Aliment>> {
 
-        const aliment = await prisma.aliment.findUnique({
-            where: {
-                code: data.code
-            }
-        });
-
-        if (aliment !== null) {
+        if (await AlimentService.isAlimentExist(data.code)) {
             throw new ApiError("Aliment code already exists", 409);
         }
 
-        //TODO : Get Category, SubCategory & SubSubCategory and do error handling
+        if (!await CategoryService.isCategoryExist(data.categoryCode)) {
+            throw new ApiError("Category doesn't exist", 404);
+        }
 
-        const addSubSubCategory = () => {
-            if (data.subSubCategoryCode !== "000000") {
-                return {
-                    subSubCategory: {
-                        connect: {
-                            code: data.subSubCategoryCode
-                        }
-                    }
-                }
-            }
-            return {};
+        if (!await SubCategoryService.isSubCategoryExist(data.subCategoryCode)) {
+            throw new ApiError("SubCategory doesn't exist", 404);
+        }
+
+        if(data.subSubCategoryCode !== SubSubCategoryService.NULL_CODE_VALUE && !await SubSubCategoryService.isSubSubCategoryExist(data.subSubCategoryCode)) {
+            throw new ApiError("SubSubCategory doesn't exist", 404);
         }
 
         return prisma.aliment.create({
             data: {
                 code: data.code,
                 name: data.name,
-                category: {
-                    connect: {
-                        code: data.categoryCode
-                    }
-                },
-                subCategory: {
-                    connect: {
-                        code: data.subCategoryCode
-                    }
-                },
-                ...addSubSubCategory()
-            },
-            select: AlimentService.AlimentPublicSelect
+                alimentCategoryCode: data.categoryCode,
+                alimentSubCategoryCode: data.subCategoryCode,
+                alimentSubSubCategoryCode: data.subSubCategoryCode !== SubSubCategoryService.NULL_CODE_VALUE ? data.subSubCategoryCode : null,
+            }
         });
 
     }

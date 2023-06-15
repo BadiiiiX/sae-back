@@ -3,7 +3,7 @@ import {Controller, POST} from "fastify-decorators";
 import AlimentService from "../services/Aliment.service";
 import {AlimentBodyCreateSchema, AlimentCreateSchema} from "../schemas/Aliment.schema";
 import {FastifyReply, FastifyRequest} from "fastify";
-import {SondageRest} from "../../index";
+import {SurveyRest} from "../../index";
 
 @Controller({route: "/aliment"})
 export default class alimentController {
@@ -35,7 +35,7 @@ export default class alimentController {
             }
         }
 
-        SondageRest.getInstance().getLogger().info("Aliment created : " + JSON.stringify(res));
+        SurveyRest.getInstance().getLogger().info("Aliment created : " + JSON.stringify(res));
 
         return reply.code(200).send(res);
     }

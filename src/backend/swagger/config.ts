@@ -12,9 +12,14 @@ function processSwaggerURL(url: string): string {
 const SwaggerConfig: RegisterOptions & FastifyDynamicSwaggerOptions = {
     swagger: {
         info: {
-            title: "SondageSae",
-            description: "Sondage sur les aliments les plus consommés :0",
-            version: process.env.npm_package_version ?? "1.0.0"
+            title: "Survey API",
+            description: "Enregistrement des sondages sur la consommation de divers aliments",
+            version: process.env.npm_package_version ?? "1.0.0",
+            contact: {
+                name: "ARAM Team",
+                email: "aram@kmkz.fr",
+                url: "notdefined.fr"
+            }
         },
         host: processSwaggerURL(DEFAULT_SWAGGER_URL),
         schemes: process.env.NODE_ENV === "production" ? ["https"] : ["http"],
@@ -27,7 +32,7 @@ const SwaggerConfig: RegisterOptions & FastifyDynamicSwaggerOptions = {
             { name: "SubCategory", description: "SubCategory related end-points" },
             { name: "SubSubCategory", description: "SubSubCategory related end-points" },
             { name: "Aliment", description: "Aliment related end-points" },
-            { name: "Sondage", description: "Survey related end-points" },
+            { name: "Survey", description: "Survey related end-points" },
         ]
     },
     refResolver: {

@@ -90,8 +90,8 @@ const getAlimentsFromExcel = async (): Promise<AlimentLine[]> => {
 (async () => {
     const alimentList = await getAlimentsFromExcel();
 
-    //await generateCategories(alimentList);
-    //await generateSubCategories(alimentList);
-    //await generateSubSubCategories(alimentList);
+    await generateCategories(alimentList);
+    await generateSubCategories(alimentList);
+    await generateSubSubCategories(alimentList);
     await generateAliments(alimentList);
 })();

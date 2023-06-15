@@ -25,7 +25,8 @@ export const UserCreateSchema: FastifySchema = {
     body: UserCreateBodySchema,
     response: {
         200: Type.Ref(UserSchema),
-        409: AlreadyExistsConflictSchema
+        409: AlreadyExistsConflictSchema,
+        404: DoesntExistsConflictSchema,
     }
 }
 
@@ -35,7 +36,7 @@ export const UserDeleteSchema: FastifySchema = {
     operationId: "deleteUser",
     body: UserDeleteBodySchema,
     response: {
-        200: Type.Boolean({default: true}),
+        200: Type.Void(),
         404: DoesntExistsConflictSchema
     }
 }

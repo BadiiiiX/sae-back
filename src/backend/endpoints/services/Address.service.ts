@@ -14,6 +14,16 @@ export default class AddressService {
         zip: true,
     }
 
+    public static async isAddressExist(id: number): Promise<boolean> {
+        const address = await prisma.address.findFirst({
+            where: {
+                id
+            }
+        });
+
+        return address !== null;
+    }
+
     async createAddress(data: AddressBodyCreateSchema): Promise<Partial<Address>> {
 
         const address = await prisma.address.findFirst({

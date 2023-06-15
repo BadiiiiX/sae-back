@@ -8,9 +8,9 @@ import * as fs from "fs";
 import { resolve } from "path";
 import {bootstrap} from "fastify-decorators";
 
-export class SondageRest {
+export class SurveyRest {
 
-    private static _instance: SondageRest;
+    private static _instance: SurveyRest;
     // @ts-ignore
     private server: FastifyInstance
     // @ts-ignore
@@ -19,11 +19,11 @@ export class SondageRest {
     private constructor() {
     }
 
-    public static getInstance(): SondageRest {
-        if(!SondageRest._instance) {
-            SondageRest._instance = new SondageRest();
+    public static getInstance(): SurveyRest {
+        if(!SurveyRest._instance) {
+            SurveyRest._instance = new SurveyRest();
         }
-        return SondageRest._instance;
+        return SurveyRest._instance;
     }
 
     public getServer() {
@@ -105,12 +105,12 @@ export class SondageRest {
 
     public async start() {
         await this.registerServerRoutes();
-        const port = process.env.PORT ?? '3000';
+        const port = process.env.SERVER_PORT ?? '3000';
 
         this.getServer()
             .listen({
                 port: parseInt(port),
-                host: process.env.HOST || "0.0.0.0"
+                host: process.env.SERVER_HOST || "127.0.0.1"
             })
             .then((address) => {
                 this.getLogger().ready(`Fastify server running @ ${address}`)

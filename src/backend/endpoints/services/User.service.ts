@@ -19,16 +19,30 @@ export default class UserService {
         }
     }
 
-    async createUser(data: UserCreateBodySchema): Promise<Partial<User>> {
-
-        const address = await prisma.address.findFirst({
+    public static async isUserExist(id: number): Promise<boolean> {
+        const user = await prisma.user.findFirst({
             where: {
-                id: data.addressId
+                id
             }
         });
 
-        if (address == null) {
-            throw new ApiError("Address not found", 500)
+        return user !== null;
+    }
+
+    async createUser(data: UserCreateBodySchema): Promise<Partial<User>> {
+
+        if (await AddressService.isAddressExist(data.addressId)) {
+            throw new ApiError("Address not found", 404)
+        }
+
+        const user = await prisma.user.findFirst({
+            where: {
+                email: data.email
+            }
+        });
+
+        if (user !== null) {
+            throw new ApiError("User already exists with this mail", 409);
         }
 
         return prisma.user.create({
@@ -37,29 +51,17 @@ export default class UserService {
                 firstname: data.firstName,
                 lastname: data.lastName,
                 birthdate: new Date(data.birthDate),
-                address: {
-                    connect: {
-                        id: data.addressId
-                    }
-                }
+                addressId: data.addressId,
             },
             select: UserService.UserPublicSelect
         });
 
     }
 
-    async deleteUser(data: UserDeleteBodySchema): Promise<Partial<void>> {
+    async deleteUser(id: UserDeleteBodySchema): Promise<Partial<void>> {
 
-        const id = data;
-
-        const user = await prisma.user.findFirst({
-            where: {
-                id
-            }
-        });
-
-        if (!user) {
-            throw new ApiError("User doesn't exist", 404);
+        if (await UserService.isUserExist(id)) {
+            throw new ApiError("User already exists", 409);
         }
 
         await prisma.user.delete({

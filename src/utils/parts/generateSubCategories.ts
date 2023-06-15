@@ -1,6 +1,7 @@
 import {AlimentLine} from "../setupData";
 import axios from "axios";
 import {capitalize} from "../capitalize";
+import {printAxiosData} from "../AxiosResultManager";
 
 type subCategoryLine = {
     code: string,
@@ -8,10 +9,11 @@ type subCategoryLine = {
     categoryCode: string
 }
 
-export const generateSubCategories = async (aliments: AlimentLine[]) => {
+export const generateSubCategories = async (aliments: AlimentLine[], log = false) => {
 
     const subCategories = new Set<string>();
     const subCategoryList: subCategoryLine[] = [];
+    let subCategoryCount = 0;
 
     for (const aliment of aliments) {
         const actualAliment = aliment as AlimentLine;
@@ -29,12 +31,17 @@ export const generateSubCategories = async (aliments: AlimentLine[]) => {
     }
 
     for (const subCategory of subCategoryList) {
-        const res = await axios.post('http://localhost:3000/subcategory/create', subCategory)
-            .then(function (response) {
-                console.log(response.data);
-            })
-            .catch(function (error) {
-                console.log(error.data);
-            });
+        subCategoryCount++;
+        await generate(subCategory, log);
     }
+
+    console.log(`Generated ${subCategoryCount} subCategories`)
+}
+
+const generate = async (subCategory: subCategoryLine, log: boolean) => {
+    const url = 'http://localhost:3000/subcategory/create';
+
+    const {data} = await axios.post(url, subCategory);
+
+    printAxiosData("SubCategory", data, log)
 }
