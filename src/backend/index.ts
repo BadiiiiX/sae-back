@@ -11,10 +11,8 @@ import {bootstrap} from "fastify-decorators";
 export class SurveyRest {
 
     private static _instance: SurveyRest;
-    // @ts-ignore
     private server: FastifyInstance
-    // @ts-ignore
-    private logger:  consolaGlobalInstance
+    private logger:  typeof consolaGlobalInstance
 
     private constructor() {
     }

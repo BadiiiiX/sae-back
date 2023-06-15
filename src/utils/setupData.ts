@@ -1,5 +1,4 @@
 import xlsx from 'xlsx'
-import axios from "axios";
 import {generateCategories} from "./parts/generateCategories";
 import {generateSubCategories} from "./parts/generateSubCategories";
 import {generateSubSubCategories} from "./parts/generateSubSubCategories";

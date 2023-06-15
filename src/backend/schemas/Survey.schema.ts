@@ -2,7 +2,6 @@ import {Type} from "@sinclair/typebox";
 import UserSchema from "./User.schema";
 import AlimentSchema from "./Aliment.schema";
 
-// @ts-ignore
 export default Type.Object({
 
    id: Type.Integer({

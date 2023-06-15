@@ -16,6 +16,7 @@ model Address {
   city   String?
   zip    String?
   User   User[]
+  @@unique([street, city, zip])
 }
 
 model User {

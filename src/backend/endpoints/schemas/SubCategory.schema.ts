@@ -1,7 +1,6 @@
 import {Static, Type} from "@sinclair/typebox";
 import {FastifySchema} from "fastify";
 import {AlreadyExistsConflictSchema, DoesntExistsConflictSchema} from "./Global.schema";
-import CategorySchema from "../../schemas/Category.schema";
 import SubCategorySchema from "../../schemas/SubCategory.schema";
 
 const SubCategoryBodyCreateSchema = Type.Object({

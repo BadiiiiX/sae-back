@@ -6,7 +6,6 @@ import {
     SubSubCategoryCreateSchema, SubSubCategoryDeleteSchema, SubSubCategoryGetAllSchema, SubSubCategoryGetSchema,
     SubSubCategoryParamsGetSchema
 } from "../schemas/SubSubCategory.schema";
-import * as repl from "repl";
 
 @Controller({route: "/subsubcategory"})
 export default class subSubCategoryController {

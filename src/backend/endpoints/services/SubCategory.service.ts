@@ -8,6 +8,8 @@ import CategoryService from "./Category.service";
 @Service()
 export default class SubCategoryService {
 
+    public static SUB_CATEGORY_CODE_LENGTH = 4;
+
     public static SubCategoryPublicSelect: Prisma.Aliment_SubCategorySelect = {
         code: true,
         name: true,
@@ -46,10 +48,9 @@ export default class SubCategoryService {
     }
 
     async getAllSubCategories(): Promise<Partial<Aliment_SubCategory[]>> {
-        // @ts-ignore
         return prisma.aliment_SubCategory.findMany({
             select: SubCategoryService.SubCategoryPublicSelect
-        });
+        }) as unknown as Partial<Aliment_SubCategory[]>;
     }
 
     async getSubCategory(code: string): Promise<Partial<Aliment_SubCategory>> {

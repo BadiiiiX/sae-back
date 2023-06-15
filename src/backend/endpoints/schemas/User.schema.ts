@@ -13,10 +13,15 @@ const UserCreateBodySchema = Type.Object({
     addressId: Type.Integer()
 })
 
+const UserGetParamsSchema = Type.Object({
+    userEmail: Type.String()
+})
+
 const UserDeleteBodySchema = Type.Integer();
 
 export type UserCreateBodySchema = Static<typeof UserCreateBodySchema>
 export type UserDeleteBodySchema = Static<typeof UserDeleteBodySchema>
+export type UserGetParamsSchema = Static<typeof UserGetParamsSchema>
 
 export const UserCreateSchema: FastifySchema = {
     tags: ["User"],
@@ -38,5 +43,25 @@ export const UserDeleteSchema: FastifySchema = {
     response: {
         200: Type.Void(),
         404: DoesntExistsConflictSchema
+    }
+}
+
+export const UserGetSchema: FastifySchema = {
+    tags: ["User"],
+    summary: "Get an user",
+    operationId: "getUserByEmail",
+    params: UserGetParamsSchema,
+    response: {
+        200: Type.Ref(UserSchema),
+        404: DoesntExistsConflictSchema
+    }
+}
+
+export const UserGetAllSchema: FastifySchema = {
+    tags: ["User"],
+    summary: "Get all users",
+    operationId: "getAllUsers",
+    response: {
+        200: Type.Array(Type.Ref(UserSchema))
     }
 }

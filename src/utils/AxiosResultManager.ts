@@ -1,5 +1,3 @@
-
-
 const isAnError = (response: any) => {
     return !!response.error;
 }

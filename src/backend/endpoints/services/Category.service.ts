@@ -1,14 +1,13 @@
 import {Service} from "fastify-decorators";
 import prisma from "../../../clients/Prisma";
 import {Prisma, Aliment_Category} from "@prisma/client";
-import {
-    CategoryBodyCreateSchema, CategoryBodyDeleteSchema
-} from "../schemas/Category.schema";
+import {CategoryBodyCreateSchema} from "../schemas/Category.schema";
 import {ApiError} from "../Errors/ApiError";
-import SubCategoryService from "./SubCategory.service";
 
 @Service()
 export default class CategoryService {
+
+    public static CATEGORY_CODE_LENGTH = 2;
 
     public static CategoryPublicSelect: Prisma.Aliment_CategorySelect = {
         code: true,
@@ -38,7 +37,7 @@ export default class CategoryService {
 
         const {code, name} = data;
 
-        if(await CategoryService.isCategoryExist(code)) {
+        if (await CategoryService.isCategoryExist(code)) {
             throw new ApiError("Category code already exists", 409);
         }
 
@@ -66,10 +65,9 @@ export default class CategoryService {
     }
 
     async getAllCategories(): Promise<Partial<Aliment_Category[]>> {
-        // @ts-ignore
         return prisma.aliment_Category.findMany({
             select: CategoryService.CategoryPublicSelect
-        });
+        }) as unknown as Partial<Aliment_Category[]>;
     }
 
     async deleteCategory(code: string): Promise<Partial<void>> {

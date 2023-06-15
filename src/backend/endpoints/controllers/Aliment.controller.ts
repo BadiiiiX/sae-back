@@ -1,9 +1,11 @@
-//@ts-nocheck
-import {Controller, POST} from "fastify-decorators";
+import {Controller, DELETE, GET, POST} from "fastify-decorators";
 import AlimentService from "../services/Aliment.service";
-import {AlimentBodyCreateSchema, AlimentCreateSchema} from "../schemas/Aliment.schema";
+import {
+    AlimentBodyCreateSchema, AlimentBodyDeleteSchema,
+    AlimentCreateSchema, AlimentDeleteSchema, AlimentGetAllSchema, AlimentGetByAnyCategorySchema,
+    AlimentGetSchema, AlimentParamsGetCategorySchema, AlimentParamsGetSchema
+} from "../schemas/Aliment.schema";
 import {FastifyReply, FastifyRequest} from "fastify";
-import {SurveyRest} from "../../index";
 
 @Controller({route: "/aliment"})
 export default class alimentController {
@@ -11,6 +13,46 @@ export default class alimentController {
     constructor(
         private alimentService: AlimentService = new AlimentService(),
     ) {
+    }
+
+    @GET({
+        url: "/:alimentCode", options: {
+            schema: AlimentGetSchema
+        }
+    })
+    public async getAlimentByCode(
+        request: FastifyRequest<{ Params: AlimentParamsGetSchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const res = await this.alimentService.getAlimentByCode(request.params.alimentCode);
+        return reply.code(200).send(res);
+    }
+
+    @GET({
+        url: "/search/:anyCategoryCode" , options: {
+            schema: AlimentGetByAnyCategorySchema
+        }
+    })
+    public async getAlimentsByAnyCategory(
+        request: FastifyRequest<{ Params: AlimentParamsGetCategorySchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const res = await this.alimentService.getAlimentByCategory(request.params.anyCategoryCode);
+
+        return reply.code(200).send(res);
+    }
+
+    @GET({
+        url: "/all", options: {
+            schema: AlimentGetAllSchema
+        }
+    })
+    public async getAllAliments(
+        request: FastifyRequest,
+        reply: FastifyReply):
+        Promise<void> {
+        const res = await this.alimentService.getAllAliments();
+        return reply.code(200).send(res);
     }
 
     @POST({
@@ -25,18 +67,19 @@ export default class alimentController {
 
         const res = await this.alimentService.createAliment(request.body);
 
+        return reply.code(200).send(res);
+    }
 
-        if(res.subSubCategory === null) {
-            const subCategoryCode =  res.subCategory.code;
-            res.subSubCategory = {
-                "code": "000000",
-                "name": "Aucune sous sous catégorie",
-                "alimentSubCategoryCode": subCategoryCode
-            }
+    @DELETE({
+        url: "/delete", options: {
+            schema: AlimentDeleteSchema
         }
-
-        SurveyRest.getInstance().getLogger().info("Aliment created : " + JSON.stringify(res));
-
+    })
+    public async deleteAliment(
+        request: FastifyRequest<{ Body: AlimentBodyDeleteSchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const res = await this.alimentService.deleteAliment(request.body.code);
         return reply.code(200).send(res);
     }
 

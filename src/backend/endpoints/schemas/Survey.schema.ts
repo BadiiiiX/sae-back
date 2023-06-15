@@ -8,13 +8,29 @@ const SurveyCreateBodySchema = Type.Object({
     userId: Type.Integer(),
 })
 
+const SurveyGetParamsByIdSchema = Type.Object({
+    surveyId: Type.Integer()
+});
+
+const SurveyGetParamsByAlimentSchema = Type.Object({
+    alimentCode: Type.String()
+});
+
+const SurveyGetParamsByUserSchema = Type.Object({
+    userId: Type.Integer()
+});
+
 const SurveyDeleteBodySchema = Type.Integer();
 
 export type SurveyCreateBodySchema = Static<typeof SurveyCreateBodySchema>
 export type SurveyDeleteBodySchema = Static<typeof SurveyDeleteBodySchema>
+export type SurveyGetParamsByIdSchema = Static<typeof SurveyGetParamsByIdSchema>
+export type SurveyGetParamsByAlimentSchema = Static<typeof SurveyGetParamsByAlimentSchema>
+export type SurveyGetParamsByUserSchema = Static<typeof SurveyGetParamsByUserSchema>
+
 
 export const SurveyCreateSchema: FastifySchema = {
-    tags: ["Sondage"],
+    tags: ["Survey"],
     summary: "Create a survey record",
     operationId: "createSurvey",
     body: SurveyCreateBodySchema,
@@ -24,13 +40,55 @@ export const SurveyCreateSchema: FastifySchema = {
     }
 }
 
+export const SurveyGetSchema: FastifySchema = {
+    tags: ["Survey"],
+    summary: "Get a survey record",
+    operationId: "getSurvey",
+    params: SurveyGetParamsByIdSchema,
+    response: {
+        200: Type.Ref(SurveySchema),
+        404: DoesntExistsConflictSchema
+    }
+}
+
+export const SurveyGetByAlimentSchema: FastifySchema = {
+    tags: ["Survey"],
+    summary: "Get a survey record by aliment",
+    operationId: "getSurveyByAliment",
+    params: SurveyGetParamsByAlimentSchema,
+    response: {
+        200: Type.Array(Type.Ref(SurveySchema)),
+        404: DoesntExistsConflictSchema
+    }
+}
+
+export const SurveyGetByUserSchema: FastifySchema = {
+    tags: ["Survey"],
+    summary: "Get a survey record by user",
+    operationId: "getSurveyByUser",
+    params: SurveyGetParamsByUserSchema,
+    response: {
+        200: Type.Array(Type.Ref(SurveySchema)),
+        404: DoesntExistsConflictSchema
+    }
+}
+
+export const SurveyGetAllSchema: FastifySchema = {
+    tags: ["Survey"],
+    summary: "Get all survey records",
+    operationId: "getAllSurvey",
+    response: {
+        200: Type.Array(Type.Ref(SurveySchema)),
+    }
+}
+
 export const SurveyDeleteSchema: FastifySchema = {
-    tags: ["Sondage"],
+    tags: ["Survey"],
     summary: "Delete a survey record",
     operationId: "deleteSurvey",
     body: SurveyDeleteBodySchema,
     response: {
-        200: Type.Boolean({default: true}),
+        200: Type.Void(),
         404: DoesntExistsConflictSchema
     }
 }

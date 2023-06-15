@@ -58,9 +58,57 @@ export default class SurveyService {
 
     }
 
-    async deleteUser(id: SurveyDeleteBodySchema): Promise<Partial<void>> {
+    async getSurvey(id: SurveyDeleteBodySchema): Promise<Partial<User>> {
 
-        if(await SurveyService.isSurveyExist(id)) {
+        if (!await SurveyService.isSurveyExist(id)) {
+            throw new ApiError("Survey doesn't exist", 404);
+        }
+
+        return prisma.survey.findFirst({
+            where: {
+                id
+            },
+            select: SurveyService.SurveyPublicSelect
+        });
+    }
+
+    async getSurveyByAlimentCode(alimentCode: string): Promise<Partial<User>> {
+
+        if (!await AlimentService.isAlimentExist(alimentCode)) {
+            throw new ApiError("Aliment doesn't exist", 404);
+        }
+
+        return prisma.survey.findFirst({
+            where: {
+                alimentCode
+            },
+            select: SurveyService.SurveyPublicSelect
+        });
+    }
+
+    async getSurveyByUserId(userId: number): Promise<Partial<User>> {
+
+        if (!await UserService.isUserExist(userId)) {
+            throw new ApiError("User doesn't exist", 404);
+        }
+
+        return prisma.survey.findFirst({
+            where: {
+                userId
+            },
+            select: SurveyService.SurveyPublicSelect
+        });
+    }
+
+    async getSurveys(): Promise<Partial<User>[]> {
+        return prisma.survey.findMany({
+            select: SurveyService.SurveyPublicSelect
+        });
+    }
+
+    async deleteSurvey(id: SurveyDeleteBodySchema): Promise<Partial<void>> {
+
+        if (await SurveyService.isSurveyExist(id)) {
             throw new ApiError("Survey doesn't exist", 404);
         }
 

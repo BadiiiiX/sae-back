@@ -1,8 +1,13 @@
-import {Controller, DELETE, POST} from "fastify-decorators";
+import {Controller, DELETE, GET, POST} from "fastify-decorators";
 import UserService from "../services/User.service";
 import {FastifyReply, FastifyRequest} from "fastify";
-import {UserCreateBodySchema, UserCreateSchema, UserDeleteBodySchema, UserDeleteSchema} from "../schemas/User.schema";
-import {User} from "@prisma/client";
+import {
+    UserCreateBodySchema,
+    UserCreateSchema,
+    UserDeleteBodySchema,
+    UserDeleteSchema, UserGetAllSchema, UserGetParamsSchema,
+    UserGetSchema
+} from "../schemas/User.schema";
 
 @Controller({route: "/user"})
 export default class userController {
@@ -10,6 +15,32 @@ export default class userController {
     constructor(
         readonly userService: UserService = new UserService()
     ) {
+    }
+
+    @GET({
+        url: "/:userEmail", options: {
+            schema: UserGetSchema
+        }
+    })
+    async getUserByEmail(
+        request: FastifyRequest<{ Params: UserGetParamsSchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const response = await this.userService.getUserByMail(request.params.userEmail);
+
+    }
+
+    @GET({
+        url: "/all", options: {
+            schema: UserGetAllSchema
+        }
+    })
+    async getAllUsers(
+        request: FastifyRequest,
+        reply: FastifyReply):
+        Promise<void> {
+        const response = await this.userService.getAllUsers();
+
     }
 
     @POST({

@@ -58,6 +58,27 @@ export default class UserService {
 
     }
 
+    async getUserByMail(email: string): Promise<Partial<User>> {
+        const user = await prisma.user.findFirst({
+            where: {
+                email
+            },
+            select: UserService.UserPublicSelect
+        });
+
+        if (user === null) {
+            throw new ApiError("User not found", 404);
+        }
+
+        return user;
+    }
+
+    async getAllUsers(): Promise<Partial<User>[]> {
+        return prisma.user.findMany({
+            select: UserService.UserPublicSelect
+        });
+    }
+
     async deleteUser(id: UserDeleteBodySchema): Promise<Partial<void>> {
 
         if (await UserService.isUserExist(id)) {
