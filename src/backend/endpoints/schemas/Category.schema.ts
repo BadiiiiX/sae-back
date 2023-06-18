@@ -63,3 +63,12 @@ export const CategoryGetAllSchema: FastifySchema = {
         200: Type.Array(Type.Ref(CategorySchema))
     }
 }
+
+export const CategoryGetAllAnySchema: FastifySchema = {
+    tags: ["Category"],
+    summary: "Get all categories, subcategories and subsubcategories",
+    operationId: "getAllAnyCategories",
+    response: {
+        200: Type.Array(Type.Ref(CategorySchema))
+    }
+}

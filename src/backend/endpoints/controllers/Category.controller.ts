@@ -7,11 +7,15 @@ import {
     CategoryBodyDeleteSchema,
     CategoryCreateSchema, CategoryDeleteSchema, CategoryGetAllSchema, CategoryGetParamsSchema, CategoryGetSchema
 } from "../schemas/Category.schema";
+import SubCategoryService from "../services/SubCategory.service";
+import SubSubCategoryService from "../services/SubSubCategory.service";
 
 @Controller({route: "/category"})
 export default class categoryController {
     constructor(
-        private categoryService: CategoryService = new CategoryService()
+        private categoryService: CategoryService = new CategoryService(),
+        private subCategoryService: SubCategoryService = new SubCategoryService(),
+        private subSubCategoryService: SubSubCategoryService = new SubSubCategoryService()
     ) {
     }
 
@@ -40,6 +44,24 @@ export default class categoryController {
         reply: FastifyReply):
         Promise<void> {
         const response = await this.categoryService.getAllCategories();
+
+        return reply.code(200).send(response);
+    }
+
+    @GET({
+        url: '/allAny', options: {
+            schema: CategoryGetAllSchema
+        }
+    })
+    async getAllAnyCategories(
+        request: FastifyRequest,
+        reply: FastifyReply):
+        Promise<void> {
+        const response = [
+            ...await this.categoryService.getAllCategories(false),
+            ...await this.subCategoryService.getAllSubCategories(false),
+            ...await this.subSubCategoryService.getAllSubSubCategories(false)
+        ]
 
         return reply.code(200).send(response);
     }

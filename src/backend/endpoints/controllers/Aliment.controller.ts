@@ -6,6 +6,7 @@ import {
     AlimentGetSchema, AlimentParamsGetCategorySchema, AlimentParamsGetSchema
 } from "../schemas/Aliment.schema";
 import {FastifyReply, FastifyRequest} from "fastify";
+import { SurveyRest } from "../..";
 
 @Controller({route: "/aliment"})
 export default class alimentController {
@@ -51,7 +52,14 @@ export default class alimentController {
         request: FastifyRequest,
         reply: FastifyReply):
         Promise<void> {
-        const res = await this.alimentService.getAllAliments();
+            
+        let res = await this.alimentService.getAllAliments();
+
+
+        res.forEach(aliment => {
+            //@ts-expect-error
+            aliment.subSubCategory = aliment.subSubCategory ?? {code: null, name: null}
+        })
         return reply.code(200).send(res);
     }
 

@@ -28,7 +28,18 @@ export class SurveyRest {
         if (!this.server) {
             this.server = Fastify({
                 logger: process.env.NODE_ENV === "development"
-            }).withTypeProvider<TypeBoxTypeProvider>();
+            }).withTypeProvider<TypeBoxTypeProvider>()
+            .register(require('@fastify/cors'), (instance) => {
+                return (req, callback) => {
+                  const corsOptions = {
+                    // This is NOT recommended for production as it enables reflection exploits
+                    origin: true
+                  };
+              
+                  // callback expects two parameters: error and options
+                  callback(null, corsOptions)
+                }
+              })
         }
 
         return this.server;

@@ -23,6 +23,11 @@ export default class CategoryService {
         }
     }
 
+    public static CategoryPublicBaseSelect: Prisma.Aliment_CategorySelect = {
+        code: true,
+        name: true
+    }
+
     public static async isCategoryExist(code: string): Promise<boolean> {
         const category = await prisma.aliment_Category.findFirst({
             where: {
@@ -64,9 +69,9 @@ export default class CategoryService {
         return category;
     }
 
-    async getAllCategories(): Promise<Partial<Aliment_Category[]>> {
+    async getAllCategories(showAllData: boolean = true): Promise<Partial<Aliment_Category[]>> {
         return prisma.aliment_Category.findMany({
-            select: CategoryService.CategoryPublicSelect
+            select: showAllData ? CategoryService.CategoryPublicSelect : CategoryService.CategoryPublicBaseSelect
         }) as unknown as Partial<Aliment_Category[]>;
     }
 

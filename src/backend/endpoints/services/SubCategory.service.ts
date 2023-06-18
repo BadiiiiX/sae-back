@@ -17,6 +17,11 @@ export default class SubCategoryService {
         subSubCategories: true,
     }
 
+    public static SubCategoryPublicBaseSelect: Prisma.Aliment_CategorySelect = {
+        code: true,
+        name: true
+    }
+
     public static async isSubCategoryExist(code: string): Promise<boolean> {
         const subCategory = await prisma.aliment_SubCategory.findFirst({
             where: {
@@ -47,9 +52,9 @@ export default class SubCategoryService {
 
     }
 
-    async getAllSubCategories(): Promise<Partial<Aliment_SubCategory[]>> {
+    async getAllSubCategories(showAllData: boolean = true): Promise<Partial<Aliment_SubCategory[]>> {
         return prisma.aliment_SubCategory.findMany({
-            select: SubCategoryService.SubCategoryPublicSelect
+            select: showAllData ? SubCategoryService.SubCategoryPublicSelect : SubCategoryService.SubCategoryPublicBaseSelect
         }) as unknown as Partial<Aliment_SubCategory[]>;
     }
 
