@@ -5,7 +5,7 @@ import CategoryService from "../services/Category.service";
 import {
     CategoryBodyCreateSchema,
     CategoryBodyDeleteSchema,
-    CategoryCreateSchema, CategoryDeleteSchema, CategoryGetAllSchema, CategoryGetParamsSchema, CategoryGetSchema
+    CategoryCreateSchema, CategoryDeleteSchema, CategoryGetAllSchema, CategoryGetParamsSchema, CategoryGetSchema, CategoryGetAllAnySchema
 } from "../schemas/Category.schema";
 import SubCategoryService from "../services/SubCategory.service";
 import SubSubCategoryService from "../services/SubSubCategory.service";
@@ -50,7 +50,7 @@ export default class categoryController {
 
     @GET({
         url: '/allAny', options: {
-            schema: CategoryGetAllSchema
+            schema: CategoryGetAllAnySchema
         }
     })
     async getAllAnyCategories(

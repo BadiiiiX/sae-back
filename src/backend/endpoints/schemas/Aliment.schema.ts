@@ -27,19 +27,35 @@ const AlimentParamsGetCategorySchema = Type.Object({
     anyCategoryCode: Type.String()
 });
 
+const AlimentParamsGetByTokenSchema = Type.Object({
+    token: Type.String()
+});
+
 const AlimentReturnsGetCategorySchema = Type.Object({
     code: Type.String(),
     name: Type.String(),
 });
 
+const AlimentReturnsGetPaginationCategorySchema = Type.Object({
+    aliments: Type.Array(AlimentReturnsGetCategorySchema),
+    nextPage: Type.Boolean()
+})
+
 const AlimentBodyDeleteSchema = Type.Object({
     code: Type.String()
 });
+
+const AlimentBodyGetByPaginationSchema = Type.Object({
+    code: Type.String(),
+    page: Type.Number()
+})
 
 export type AlimentBodyCreateSchema = Static<typeof AlimentBodyCreateSchema>;
 export type AlimentBodyDeleteSchema = Static<typeof AlimentBodyDeleteSchema>;
 export type AlimentParamsGetSchema = Static<typeof AlimentParamsGetSchema>;
 export type AlimentParamsGetCategorySchema = Static<typeof AlimentParamsGetCategorySchema>;
+export type AlimentParamsGetByTokenSchema = Static<typeof AlimentParamsGetByTokenSchema>;
+export type AlimentBodyGetByPaginationSchema = Static<typeof AlimentBodyGetByPaginationSchema>;
 
 export const AlimentCreateSchema: FastifySchema = {
     tags: ["Aliment"],
@@ -91,6 +107,27 @@ export const AlimentGetByAnyCategorySchema: FastifySchema = {
     params: AlimentParamsGetCategorySchema,
     response: {
         200: Type.Array(AlimentReturnsGetCategorySchema),
+        404: DoesntExistsConflictSchema
+    }
+}
+
+export const AlimentGetByTokenSchema: FastifySchema = {
+    tags: ["Aliment"],
+    summary: "get aliments by string",
+    operationId: "getAlimentsByToken",
+    params: AlimentParamsGetByTokenSchema,
+    response: {
+        200: Type.Array(AlimentReturnsGetCategorySchema)
+    }
+}
+
+export const AlimentGetByPaginationSchema: FastifySchema = {
+    tags: ["Aliment"],
+    summary: "get aliments by category, with pagination",
+    operationId: "getPaginationAliment",
+    body: AlimentBodyGetByPaginationSchema,
+    response: {
+        200: AlimentReturnsGetPaginationCategorySchema,
         404: DoesntExistsConflictSchema
     }
 }

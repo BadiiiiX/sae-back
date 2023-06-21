@@ -30,7 +30,7 @@ export default class subCategoryController {
     }
 
     @GET({
-        url: "/", options: {
+        url: "/all", options: {
             schema: SubCategoryGetAllSchema
         }
     })

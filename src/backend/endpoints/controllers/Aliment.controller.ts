@@ -1,9 +1,18 @@
 import {Controller, DELETE, GET, POST} from "fastify-decorators";
 import AlimentService from "../services/Aliment.service";
 import {
-    AlimentBodyCreateSchema, AlimentBodyDeleteSchema,
-    AlimentCreateSchema, AlimentDeleteSchema, AlimentGetAllSchema, AlimentGetByAnyCategorySchema,
-    AlimentGetSchema, AlimentParamsGetCategorySchema, AlimentParamsGetSchema
+    AlimentBodyCreateSchema,
+    AlimentBodyDeleteSchema,
+    AlimentBodyGetByPaginationSchema,
+    AlimentCreateSchema,
+    AlimentDeleteSchema,
+    AlimentGetAllSchema,
+    AlimentGetByAnyCategorySchema,
+    AlimentGetByPaginationSchema,
+    AlimentGetByTokenSchema,
+    AlimentGetSchema, AlimentParamsGetByTokenSchema,
+    AlimentParamsGetCategorySchema,
+    AlimentParamsGetSchema
 } from "../schemas/Aliment.schema";
 import {FastifyReply, FastifyRequest} from "fastify";
 import { SurveyRest } from "../..";
@@ -38,7 +47,21 @@ export default class alimentController {
         request: FastifyRequest<{ Params: AlimentParamsGetCategorySchema }>,
         reply: FastifyReply):
         Promise<void> {
-        const res = await this.alimentService.getAlimentByCategory(request.params.anyCategoryCode);
+        const res = await this.alimentService.getAlimentByAnyCategory(request.params.anyCategoryCode);
+
+        return reply.code(200).send(res);
+    }
+
+    @GET({
+        url: "/find/:token", options: {
+            schema: AlimentGetByTokenSchema
+        }
+    })
+    public async getAlimentsByToken(
+        request: FastifyRequest<{ Params: AlimentParamsGetByTokenSchema }>,
+        reply: FastifyReply):
+        Promise<void> {
+        const res = await this.alimentService.getAlimentByToken(request.params.token);
 
         return reply.code(200).send(res);
     }
@@ -61,6 +84,22 @@ export default class alimentController {
             aliment.subSubCategory = aliment.subSubCategory ?? {code: null, name: null}
         })
         return reply.code(200).send(res);
+    }
+
+    @POST({
+        url: "/paginate", options: {
+            schema: AlimentGetByPaginationSchema
+        }
+    })
+    public async getPaginationAliment(
+        request: FastifyRequest<{Body: AlimentBodyGetByPaginationSchema}>,
+        reply: FastifyReply):
+        Promise<void> {
+
+        const res = await this.alimentService.getAlimentsPagination(request.body);
+
+        return reply.code(200).send(res);
+
     }
 
     @POST({
