@@ -8,6 +8,7 @@ import {
     UserDeleteSchema, UserGetAllSchema, UserGetParamsSchema,
     UserGetSchema
 } from "../schemas/User.schema";
+import * as repl from "repl";
 
 @Controller({route: "/user"})
 export default class userController {
@@ -28,6 +29,7 @@ export default class userController {
         Promise<void> {
         const response = await this.userService.getUserByMail(request.params.userEmail);
 
+        reply.code(200).send(response)
     }
 
     @GET({
@@ -39,8 +41,9 @@ export default class userController {
         request: FastifyRequest,
         reply: FastifyReply):
         Promise<void> {
-        const response = await this.userService.getAllUsers();
+        const res = await this.userService.getAllUsers();
 
+        reply.code(200).send(res);
     }
 
     @POST({

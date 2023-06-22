@@ -13,10 +13,7 @@ export default class UserService {
         firstname: true,
         lastname: true,
         birthdate: true,
-        email: true,
-        address: {
-            select: AddressService.AddressPublicSelect
-        }
+        email: true
     }
 
     public static async isUserExist(id: number): Promise<boolean> {
@@ -31,13 +28,12 @@ export default class UserService {
 
     async createUser(data: UserCreateBodySchema): Promise<Partial<User>> {
 
-        if (await AddressService.isAddressExist(data.addressId)) {
-            throw new ApiError("Address not found", 404)
-        }
+        const mail = decodeURIComponent(data.email);
+
 
         const user = await prisma.user.findFirst({
             where: {
-                email: data.email
+                email: mail
             }
         });
 
@@ -47,11 +43,10 @@ export default class UserService {
 
         return prisma.user.create({
             data: {
-                email: data.email,
+                email: mail,
                 firstname: data.firstName,
                 lastname: data.lastName,
-                birthdate: new Date(data.birthDate),
-                addressId: data.addressId,
+                birthdate: new Date(data.birthDate)
             },
             select: UserService.UserPublicSelect
         });
@@ -59,9 +54,12 @@ export default class UserService {
     }
 
     async getUserByMail(email: string): Promise<Partial<User>> {
+
+        const mail = decodeURIComponent(email);
+
         const user = await prisma.user.findFirst({
             where: {
-                email
+                email: mail
             },
             select: UserService.UserPublicSelect
         });

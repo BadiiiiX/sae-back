@@ -14,7 +14,7 @@
     "@fastify/swagger": "^8.5.1",
     "@fastify/swagger-ui": "^1.8.1",
     "@fastify/type-provider-typebox": "^3.2.0",
-    "@prisma/client": "^4.15.0",
+    "@prisma/client": "^4.16.0",
     "@sinclair/typebox": "^0.28.15",
     "axios": "^1.4.0",
     "consola": "^3.1.0",

@@ -9,8 +9,7 @@ const UserCreateBodySchema = Type.Object({
         format: "date"
     }),
     firstName: Type.String(),
-    lastName: Type.String(),
-    addressId: Type.Integer()
+    lastName: Type.String()
 })
 
 const UserGetParamsSchema = Type.Object({
