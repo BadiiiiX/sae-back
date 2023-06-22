@@ -3,7 +3,6 @@ import {Prisma, User} from "@prisma/client";
 import prisma from "../../../clients/Prisma";
 import {UserCreateBodySchema, UserDeleteBodySchema} from "../schemas/User.schema";
 import {ApiError} from "../Errors/ApiError";
-import AddressService from "./Address.service";
 
 @Service()
 export default class UserService {

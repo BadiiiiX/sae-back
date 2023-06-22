@@ -20,6 +20,32 @@ const SurveyGetParamsByUserSchema = Type.Object({
     userId: Type.Integer()
 });
 
+const SurveyGetReturnSchema = Type.Object({
+
+    id: Type.Number(),
+    aliment: Type.Object({
+        code: Type.String(),
+        name: Type.String(),
+        alimentCategoryCode: Type.String(),
+        alimentSubCategoryCode: Type.String(),
+        alimentSubSubCategoryCode: Type.String()
+    }),
+    user: Type.Object({
+        id: Type.Number(),
+        email: Type.String(),
+        birthdate: Type.String({
+            format: "date"
+        }),
+        firstname: Type.String(),
+        lastname: Type.String(),
+    }),
+    date: Type.String({
+        format: "date"
+    }),
+
+
+})
+
 const SurveyDeleteBodySchema = Type.Integer();
 
 export type SurveyCreateBodySchema = Static<typeof SurveyCreateBodySchema>
@@ -35,7 +61,7 @@ export const SurveyCreateSchema: FastifySchema = {
     operationId: "createSurvey",
     body: SurveyCreateBodySchema,
     response: {
-        200: Type.Ref(SurveySchema),
+        200: SurveyGetReturnSchema,
         409: AlreadyExistsConflictSchema
     }
 }

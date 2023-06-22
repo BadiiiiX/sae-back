@@ -9,6 +9,7 @@ import {
     SurveyGetByUserSchema,
     SurveyGetParamsByAlimentSchema, SurveyGetParamsByIdSchema, SurveyGetParamsByUserSchema, SurveyGetSchema
 } from "../schemas/Survey.schema";
+import { SurveyRest } from "../..";
 
 @Controller({route: "/survey"})
 export default class surveyController {
@@ -80,7 +81,10 @@ export default class surveyController {
         reply: FastifyReply):
         Promise<void> {
         const res = await this.surveyService.createSurvey(request.body);
-        return reply.code(200).send(res);
+
+        SurveyRest.getInstance().getLogger().info(res)
+
+        reply.code(200).send(res);
     }
 
     @DELETE({
